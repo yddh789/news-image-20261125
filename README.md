@@ -12,21 +12,29 @@ USDC, top 50 entries paid).
 
 ## Run it
 
-`main.py` (Python 3.13, Pillow only) draws the image itself: a dark masthead
-with the date, then a 2 x 3 grid of story cards, each with a tag, a headline,
-a short body and a small pictogram drawn from shapes. It writes
-`output/25-nov-2026-news.png` (1024 x 1024, about 152 KiB, under the 1 MiB
-limit and inside the competition's 1024 x 1024 cap). In the grader's sandbox,
-where `/output` exists, it writes `/output/entry.png` instead.
+`main.py` (Python 3, **standard library only** — no Pillow, no system
+fonts, no network) draws the image itself: a dark masthead with the date,
+then a 2 x 3 grid of story cards, each with a tag, a headline, a short
+body and a small pictogram drawn from shapes. It writes
+`output/25-nov-2026-news.png` (1024 x 1024, about 23 KiB, under the 1 MiB
+limit and inside the competition's 1024 x 1024 cap). In the grader's
+sandbox, where `/output` exists (or `MAKEFUN_OUTPUT_DIR` is set), it
+writes `/output/entry.png` instead.
+
+Because the grading sandbox has neither Pillow nor DejaVu fonts, the
+program draws everything itself: a pixel canvas with its own
+rect/line/circle/polygon primitives, an embedded 5x7 bitmap font
+(A-Z, a-z, 0-9, punctuation) rendered by plotting scaled dots, and a
+hand-written PNG encoder (zlib-compressed scanlines, filter byte 0).
 
 ```sh
-pip install pillow   # only if Pillow is not installed yet
 python3 main.py
 ```
 
 The program is deterministic: no randomness, no network access, no clock.
-Two runs write byte-identical output — verified with `sha256sum`, both runs
-give `ae9751bd98deca7c07464df783f979c37a41f22aba7c5be78991576b74dae014`.
+Two runs write byte-identical output — verified with `sha256sum` in a
+clean environment (`env -i PATH=/usr/bin:/bin python3 -P -s main.py`),
+both runs give `a688ff0b3dc85ad8b2e209c42e5d55707c6f95b9dafad971eee91e85b31ebe69`.
 
 ## The six stories
 
